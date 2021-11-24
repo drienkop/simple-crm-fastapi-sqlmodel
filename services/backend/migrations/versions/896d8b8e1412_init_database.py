@@ -1,8 +1,8 @@
 """init database
 
-Revision ID: 4465db18f708
+Revision ID: 896d8b8e1412
 Revises: 
-Create Date: 2021-11-24 10:38:24.470185
+Create Date: 2021-11-24 15:16:59.233653
 
 """
 from alembic import op
@@ -11,7 +11,7 @@ import sqlmodel
 
 
 # revision identifiers, used by Alembic.
-revision = '4465db18f708'
+revision = '896d8b8e1412'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -32,6 +32,13 @@ def upgrade():
     op.create_index(op.f('ix_address_id'), 'address', ['id'], unique=False)
     op.create_index(op.f('ix_address_street_name'), 'address', ['street_name'], unique=False)
     op.create_index(op.f('ix_address_zip_code'), 'address', ['zip_code'], unique=False)
+    op.create_table('product',
+    sa.Column('name', sa.String(), nullable=True),
+    sa.Column('id', sa.Integer(), nullable=True),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('name')
+    )
+    op.create_index(op.f('ix_product_id'), 'product', ['id'], unique=False)
     op.create_table('customer',
     sa.Column('mobile_number', sa.String(), nullable=True),
     sa.Column('email', sa.String(), nullable=True),
@@ -64,6 +71,8 @@ def downgrade():
     op.drop_index(op.f('ix_customer_birth_date'), table_name='customer')
     op.drop_index(op.f('ix_customer_address_id'), table_name='customer')
     op.drop_table('customer')
+    op.drop_index(op.f('ix_product_id'), table_name='product')
+    op.drop_table('product')
     op.drop_index(op.f('ix_address_zip_code'), table_name='address')
     op.drop_index(op.f('ix_address_street_name'), table_name='address')
     op.drop_index(op.f('ix_address_id'), table_name='address')

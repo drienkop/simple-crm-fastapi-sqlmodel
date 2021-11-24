@@ -50,3 +50,17 @@ class CustomerOut(CustomerBase):
 
 class CustomerIn(CustomerBase):
     address: Optional[AddressIn]
+
+
+class ProductBase(SQLModel):
+    name: Optional[str] = None
+
+
+class Product(ProductBase, table=True):
+    id: int = Field(default=None, primary_key=True)
+    name: str = Field(sa_column=Column('name', String, unique=True))
+
+
+class ProductOut(ProductBase):
+    id: int
+    name: str
