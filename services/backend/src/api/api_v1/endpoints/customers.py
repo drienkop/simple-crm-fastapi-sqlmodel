@@ -8,6 +8,7 @@ from sqlalchemy.orm import selectinload
 
 from src.database.config import get_session
 from src.database.models import CustomerOut, Customer, Address, CustomerIn
+from src.api.api_v1.dependencies.customers import get_customer_by_id_from_path
 
 router = APIRouter()
 
@@ -54,3 +55,8 @@ async def create_customer(customer: CustomerIn,
 
     await session.refresh(customer_obj)
     return customer_obj
+
+
+@router.get('/{customer_id}', response_model=CustomerOut)
+async def get_one_customer(customer: Customer = Depends(get_customer_by_id_from_path)):
+    return customer
