@@ -64,3 +64,7 @@ class Product(ProductBase, table=True):
 class ProductOut(ProductBase):
     id: int
     name: str
+
+
+class ProductIn(ProductBase):
+    name: str
