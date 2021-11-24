@@ -2,7 +2,7 @@ from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import select
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.database.config import get_session
@@ -35,3 +35,18 @@ async def create_product(product: ProductIn,
 
     await session.refresh(product_obj)
     return product_obj
+
+
+@router.get('/{product_id}', response_model=ProductOut)
+async def get_one_product(product_id: int,
+                          session: AsyncSession = Depends(get_session)):
+    query = select(Product).where(Product.id == product_id)
+    result = await session.execute(query)
+    try:
+        product = result.scalars().one()
+    except NoResultFound:
+        raise HTTPException(
+            status_code=404,
+            detail='Sorry, that product does not exist.'
+        )
+    return product
