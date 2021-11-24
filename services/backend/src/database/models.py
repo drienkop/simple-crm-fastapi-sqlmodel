@@ -82,3 +82,7 @@ class ProductOut(ProductBase):
 
 class ProductIn(ProductBase):
     name: str
+
+
+class ProductUpdate(ProductBase):
+    product_id: int
