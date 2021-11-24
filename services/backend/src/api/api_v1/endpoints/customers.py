@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from src.database.config import get_session
-from src.database.models import CustomerOut, Customer, Address, CustomerIn
+from src.database.models import CustomerOut, Customer, Address, CustomerIn, ProductOut
 from src.api.api_v1.dependencies.customers import get_customer_by_id_from_path
 
 router = APIRouter()
@@ -19,7 +19,7 @@ async def get_customers(mobile_number: Optional[str] = None,
                         house_number: Optional[str] = None,
                         zip_code: Optional[str] = None,
                         session: AsyncSession = Depends(get_session)):
-    query = select(Customer).options(selectinload(Customer.address))
+    query = select(Customer).options(selectinload(Customer.address)).options(selectinload(Customer.products))
     if mobile_number:
         query = query.where(Customer.mobile_number == mobile_number)
     if email:
@@ -60,3 +60,9 @@ async def create_customer(customer: CustomerIn,
 @router.get('/{customer_id}', response_model=CustomerOut)
 async def get_one_customer(customer: Customer = Depends(get_customer_by_id_from_path)):
     return customer
+
+
+@router.get('/{customer_id}/products', response_model=List[ProductOut])
+async def get_customer_products(customer: Customer = Depends(get_customer_by_id_from_path)):
+    products = customer.products
+    return products

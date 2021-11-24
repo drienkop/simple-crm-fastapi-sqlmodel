@@ -5,6 +5,15 @@ from sqlalchemy.sql.schema import Column
 from sqlmodel import SQLModel, Field, Relationship
 
 
+class CustomerProductLink(SQLModel, table=True):
+    customer_id: Optional[int] = Field(
+        default=None, foreign_key='customer.id', primary_key=True
+    )
+    product_id: Optional[int] = Field(
+        default=None, foreign_key='product.id', primary_key=True
+    )
+
+
 class AddressBase(SQLModel):
     street_name: str
     house_number: str
@@ -42,6 +51,9 @@ class Customer(CustomerBase, table=True):
     mobile_number: str = Field(sa_column=Column('mobile_number', String, unique=True))
     email: str = Field(sa_column=Column('email', String, unique=True))
 
+    products: List['Product'] = Relationship(back_populates='customers', link_model=CustomerProductLink,
+                                             sa_relationship_kwargs={'lazy': 'selectin'})
+
 
 class CustomerOut(CustomerBase):
     id: int
@@ -59,6 +71,8 @@ class ProductBase(SQLModel):
 class Product(ProductBase, table=True):
     id: int = Field(default=None, primary_key=True)
     name: str = Field(sa_column=Column('name', String, unique=True))
+
+    customers: List[Customer] = Relationship(back_populates='products', link_model=CustomerProductLink)
 
 
 class ProductOut(ProductBase):
