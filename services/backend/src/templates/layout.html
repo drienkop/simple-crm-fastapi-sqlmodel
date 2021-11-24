@@ -1,0 +1,49 @@
+<!doctype html>
+<html>
+  <head>
+    {% block head %}
+    <title>{% block title %}{% endblock %} - Simple CRM</title>
+    <link href="{{ url_for('static', path='css/skeleton.css') }}" rel="stylesheet" >
+    <link href="{{ url_for('static', path='css/custom.css') }}" rel="stylesheet" >
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" ></script>
+    <script src="{{ url_for('static', path='js/site.js') }}"></script>
+    {% endblock %}
+  </head>
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="twelve columns">
+          <h3><a class="heading" href="{{ url_for('index') }}">Simple CRM</a></h3>
+        </div>
+      </div>
+      <div class="row">
+        <div class="twelve columns">
+          <ul class="navbar-list">
+            <li class="navbar-item"><a class="navbar-link" href="#">Intro</a></li>
+            <li class="navbar-item">
+              <a class="navbar-link" href="#" data-popover="#codeNavPopover">Customers</a>
+              <div id="codeNavPopover" class="popover">
+                <ul class="popover-list">
+                  <li class="popover-item">
+                    <a class="popover-link" href="#">Item A</a>
+                  </li>
+                  <li class="popover-item">
+                    <a class="popover-link" href="#">Item B</a>
+                  </li>
+                </ul>
+              </div>
+            </li>
+            <li class="navbar-item"><a class="navbar-link" href="#">Products</a></li>
+          </ul>
+        </div>
+      </div>
+      {% block content %}{% endblock %}
+      <div class="row">
+        <div class="twelve columns">
+        {% block footer %}{% endblock %}
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

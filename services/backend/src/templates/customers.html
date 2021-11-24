@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+{% block title %}Customers{% endblock %}
+{% block head %}
+{{ super() }}
+{% endblock %}
+{% block content %}
+<div class="twelve columns">
+    <h4>Add customer</h4>
+     <form id="myForm" action="comment.php" method="post">
+       First name: <input type="text" name="name">
+       Last name: <input type="text" name="name">
+       <input type="submit" value="Submit Comment">
+     </form>
+</div>
+{% endblock %}
