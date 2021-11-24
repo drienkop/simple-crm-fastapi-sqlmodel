@@ -1,11 +1,13 @@
 from typing import List, Optional
-from fastapi import APIRouter, Depends
+
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from src.database.config import get_session
-from src.database.models import CustomerOut, Customer, Address
+from src.database.models import CustomerOut, Customer, Address, CustomerIn
 
 router = APIRouter()
 
@@ -32,3 +34,23 @@ async def get_customers(mobile_number: Optional[str] = None,
     result = await session.execute(query)
     customers = result.scalars().all()
     return customers
+
+
+@router.post('', response_model=CustomerOut)
+async def create_customer(customer: CustomerIn,
+                          session: AsyncSession = Depends(get_session)):
+    customer_obj = Customer.from_orm(customer)
+    address_obj = Address.from_orm(customer.address)
+    customer_obj.address = address_obj
+    session.add(customer_obj)
+
+    try:
+        await session.commit()
+    except IntegrityError:
+        raise HTTPException(
+            status_code=409,
+            detail='Sorry, that customer already exists.'
+        )
+
+    await session.refresh(customer_obj)
+    return customer_obj

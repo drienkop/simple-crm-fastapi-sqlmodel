@@ -1,6 +1,7 @@
 from typing import Optional, List
-from sqlalchemy.sql.schema import Column
+
 from sqlalchemy import String
+from sqlalchemy.sql.schema import Column
 from sqlmodel import SQLModel, Field, Relationship
 
 
@@ -17,6 +18,10 @@ class Address(AddressBase, table=True):
 
 
 class AddressOut(AddressBase):
+    pass
+
+
+class AddressIn(AddressBase):
     pass
 
 
@@ -41,3 +46,7 @@ class Customer(CustomerBase, table=True):
 class CustomerOut(CustomerBase):
     id: int
     address: Optional[AddressOut]
+
+
+class CustomerIn(CustomerBase):
+    address: Optional[AddressIn]
